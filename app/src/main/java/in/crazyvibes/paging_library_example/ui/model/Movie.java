@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.annotations.Expose;
@@ -264,4 +265,17 @@ public class Movie extends BaseObservable implements Parcelable {
     public static Creator<Movie> getCREATOR() {
         return CREATOR;
     }
+
+    public static final DiffUtil.ItemCallback<Movie> CALLBACK=new DiffUtil.ItemCallback<Movie>() {
+        @Override
+        public boolean areItemsTheSame(Movie oldItem, Movie newItem) {
+            return oldItem.id == newItem.id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(Movie oldItem, Movie newItem) {
+            return true;
+        }
+    };
+
 }

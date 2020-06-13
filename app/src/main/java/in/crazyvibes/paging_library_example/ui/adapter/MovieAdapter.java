@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -17,13 +18,14 @@ import in.crazyvibes.paging_library_example.databinding.MovieListItemBinding;
 import in.crazyvibes.paging_library_example.ui.MovieActivity;
 import in.crazyvibes.paging_library_example.ui.model.Movie;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends PagedListAdapter<Movie,MovieAdapter.MovieViewHolder> {
     private Context context;
-    private ArrayList<Movie> movieArrayList;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movieArrayList) {
+
+    public MovieAdapter(Context context) {
+        super(Movie.CALLBACK);
         this.context = context;
-        this.movieArrayList = movieArrayList;
+
     }
 
     @NonNull
@@ -37,14 +39,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
-        Movie movie=movieArrayList.get(position);
+        Movie movie=getItem(position);
         holder.movieListItemBinding.setMovie(movie);
     }
 
-    @Override
-    public int getItemCount() {
-        return movieArrayList.size();
-    }
+
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         private MovieListItemBinding movieListItemBinding;
@@ -61,14 +60,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
                     if(position!=RecyclerView.NO_POSITION) {
 
-                        Movie selctedMovie = movieArrayList.get(position);
+                        Movie selctedMovie = getItem(position);
 
                         Intent intent=new Intent(context, MovieActivity.class);
                         intent.putExtra("movie",selctedMovie);
                         context.startActivity(intent);
-
-
-
                     }
 
 
