@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +25,9 @@ import in.crazyvibes.paging_library_example.ui.model.Movie;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private ArrayList<Movie> movies;
+
+    private PagedList<Movie> movies;
+
     private MovieAdapter movieAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainActivityViewModel mainActivityViewModel;
@@ -54,22 +57,28 @@ public class MainActivity extends AppCompatActivity {
 
     public void getPopularMovies() {
 
-        mainActivityViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+//        mainActivityViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Movie> moviesFromLiveData) {
+//                movies = (ArrayList<Movie>) moviesFromLiveData;
+//                showOnRecyclerView();
+//            }
+//        });
+
+        mainActivityViewModel.getMoviesPagedList().observe(this, new Observer<PagedList<Movie>>() {
             @Override
-            public void onChanged(@Nullable List<Movie> moviesFromLiveData) {
-                movies = (ArrayList<Movie>) moviesFromLiveData;
+            public void onChanged(@Nullable PagedList<Movie> moviesFromLiveData) {
+                movies=moviesFromLiveData;
                 showOnRecyclerView();
             }
         });
-
-
     }
 
     private void showOnRecyclerView() {
 
         recyclerView = activityMainBinding.rvMovies;
-        movieAdapter = new MovieAdapter(this, movies);
-
+        movieAdapter = new MovieAdapter(this);
+        movieAdapter.submitList(movies);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
